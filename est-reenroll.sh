@@ -13,7 +13,7 @@ set -u
 
 # Base directories
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-__tmp=$(mktemp -d /tmp/repo.XXXXXXXXX)
+__certs=${__dir}/certs)
 
 # Global Variables
 VERSION="0.0.1"
@@ -21,9 +21,11 @@ DETECTED_OS=$(cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2- | tr -d '
 
 # Script Variables
 dtg=$(date '+%s')
+cacert="${__certs}/trust.pem"
 
 
 # User Defined Variables
+cauri="https://twsldc205.gray.bah-csfc.lab/certagent/est/ca7/"
 cnvalue="DemoCN"
 
 # Load variables from external config
@@ -32,7 +34,6 @@ cnvalue="DemoCN"
 ######## FUNCTIONS #########
 # All operations are built into individual functions for better readibility
 # and management.  
-
 
 show_version() {
     printf "EST-SimpleReenroll version ${VERSION}"
@@ -52,6 +53,10 @@ show_help() {
         ./repr -u  Downloads latest RPMs and creates a tarball.
     "
     exit 0
+}
+
+get_cacerts() {
+    curl --insecure ${cauri}/cacerts -v -o ${cacert}
 }
 
 
